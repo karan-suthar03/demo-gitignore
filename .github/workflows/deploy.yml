@@ -28,6 +28,8 @@ jobs:
             echo "── Ensuring repo exists ─────────────────────────"
             if [ ! -d "/var/www/example-app/.git" ]; then
               echo "First deploy — cloning repo..."
+              sudo mkdir -p /var/www/example-app
+              sudo chown "$USER:$USER" /var/www/example-app
               git clone https://github.com/${{ github.repository }}.git /var/www/example-app
             fi
             cd /var/www/example-app
