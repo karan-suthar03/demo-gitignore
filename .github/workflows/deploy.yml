@@ -16,18 +16,21 @@ jobs:
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
-        env:
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         with:
           host:        ${{ secrets.SSH_HOST }}
           username:    ${{ secrets.SSH_USER }}
           key:         ${{ secrets.SSH_PRIVATE_KEY }}
           port:        ${{ secrets.SSH_PORT || 22 }}
-          envs:        DEPLOY_PATH
           script_stop: true
           script: |
             set -e
-            cd "$DEPLOY_PATH"
+
+            echo "── Ensuring repo exists ─────────────────────────"
+            if [ ! -d "/var/www/example-app/.git" ]; then
+              echo "First deploy — cloning repo..."
+              git clone https://github.com/${{ github.repository }}.git /var/www/example-app
+            fi
+            cd /var/www/example-app
 
             echo "── Pulling latest code ──────────────────────────"
             git pull origin main
