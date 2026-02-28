@@ -65,7 +65,7 @@ jobs:
       - name: Install dependencies & restart services
         run: |
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'DEPLOY_SCRIPT'
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << DEPLOY_SCRIPT
 
             set -e
 
