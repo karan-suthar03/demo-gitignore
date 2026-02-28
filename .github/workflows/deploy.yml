@@ -16,15 +16,18 @@ jobs:
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         with:
           host:        ${{ secrets.SSH_HOST }}
           username:    ${{ secrets.SSH_USER }}
           key:         ${{ secrets.SSH_PRIVATE_KEY }}
           port:        ${{ secrets.SSH_PORT || 22 }}
+          envs:        DEPLOY_PATH
           script_stop: true
           script: |
             set -e
-            cd ${{ secrets.DEPLOY_PATH }}
+            cd "$DEPLOY_PATH"
 
             echo "── Pulling latest code ──────────────────────────"
             git pull origin main
