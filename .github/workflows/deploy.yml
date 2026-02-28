@@ -88,15 +88,14 @@ jobs:
               echo "SSL certs not found — provisioning with Certbot..."
 
               # Temporary HTTP-only config for ACME challenge
-              sudo tee /etc/nginx/sites-available/demo.being-karan.in > /dev/null <<'NGINX_HTTP'
-              server {
-                listen 80;
-                listen [::]:80;
-                server_name demo.being-karan.in;
-                location /.well-known/acme-challenge/ { root /var/www/certbot; }
-                location / { return 200 'Provisioning SSL...'; add_header Content-Type text/plain; }
-              }
-              NGINX_HTTP
+              printf '%s\n' \
+                'server {' \
+                '    listen 80;' \
+                '    listen [::]:80;' \
+                '    server_name demo.being-karan.in;' \
+                '    location /.well-known/acme-challenge/ { root /var/www/certbot; }' \
+                '    location / { return 200 "Provisioning SSL..."; add_header Content-Type text/plain; }' \
+                '}' | sudo tee /etc/nginx/sites-available/demo.being-karan.in > /dev/null
               sudo ln -sf /etc/nginx/sites-available/demo.being-karan.in \
                           /etc/nginx/sites-enabled/demo.being-karan.in
               sudo mkdir -p /var/www/certbot
